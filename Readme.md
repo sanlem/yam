@@ -1,4 +1,4 @@
-https://travis-ci.org/sanlem/yam.svg?branch=master
+![build status](https://travis-ci.org/sanlem/yam.svg?branch=master)
 
 To install project:
 1. create virtualenv:
