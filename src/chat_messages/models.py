@@ -6,6 +6,7 @@ class Chat(models.Model):
     class Meta:
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
+        # app_label = "chat_messages"
 
     PRIVATE = "private"
     GROUP = "group"
@@ -24,6 +25,7 @@ class Message(models.Model):
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
         ordering = ["created_at"]
+        # app_label = "chat_messages"
 
     chat = models.ForeignKey(Chat, related_name="message", verbose_name=_("Chat"))
     sender = models.ForeignKey("users.Profile", related_name="out_messages", blank=True,

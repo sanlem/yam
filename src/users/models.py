@@ -7,6 +7,7 @@ class Profile(models.Model):
     class Meta:
         verbose_name = _("User's profiles")
         verbose_name_plural = _("Users profiles")
+        # app_label = "users"
 
     user = models.OneToOneField(User, related_name="profile")
     blocked = models.ManyToManyField("self", symmetrical=False, blank=True,
