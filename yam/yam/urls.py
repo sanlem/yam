@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
+from yam.chat_messages.urls import router as messages_router
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    messages_router.urls
 ]
