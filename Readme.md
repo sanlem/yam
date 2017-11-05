@@ -1,3 +1,5 @@
+https://travis-ci.org/sanlem/yam.svg?branch=master
+
 To install project:
 1. create virtualenv:
 virtualenv --python=/path/to/python3 /path/to/env/forled
