@@ -8,4 +8,3 @@ class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
     permission_classes = [IsMessageSenderOrReadOnly]
-

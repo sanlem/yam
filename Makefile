@@ -6,4 +6,4 @@ install:
 
 test:
 	python $(MANAGE) test
-	flake8 --exclude '*migrations*' --ignore=F403
+	flake8 --exclude '*migrations*,manage.py'
