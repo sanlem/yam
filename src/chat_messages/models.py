@@ -16,7 +16,7 @@ class Chat(models.Model):
     room_type = models.CharField(choices=[
         (PRIVATE, _("Private hat")),
         (GROUP, _("Group chat"))
-    ], verbose_name=_("Chat room type"))
+    ], max_length=len(PRIVATE), verbose_name=_("Chat room type"))
 
 
 class Message(models.Model):

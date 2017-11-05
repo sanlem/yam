@@ -3,4 +3,4 @@ from .views import MessageViewSet
 
 
 router = DefaultRouter()
-router.register(r'messages', MessageViewSet, base_name="message")
+router.register(r'', MessageViewSet, base_name="message")
