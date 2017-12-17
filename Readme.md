@@ -19,3 +19,8 @@ cd yam
 ./manage.py runserver
 
 6. enjoy (or nor)
+
+You can run this via docker:
+1. install docker
+
+2. sudo docker-compose run web
