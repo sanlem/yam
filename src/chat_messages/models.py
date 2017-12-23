@@ -18,6 +18,12 @@ class Chat(models.Model):
         (GROUP, _("Group chat"))
     ], max_length=len(PRIVATE), verbose_name=_("Chat room type"))
 
+    participants = models.ManyToManyField("users.Profile", related_name="chats",
+                                          verbose_name=_("Participants"))
+
+    def __str__(self):
+        return "Chat {}".format(self.name)
+
 
 class Message(models.Model):
     class Meta:
