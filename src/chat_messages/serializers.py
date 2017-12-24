@@ -7,6 +7,14 @@ class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
         fields = ["id", "sender", "text", "created_at", "chat"]
+        read_only_fields = ["sender", "created_at"]
+
+    def validate(self, attrs):
+        chat = attrs["chat"]
+        user = self.context["request"].user
+        if user.profile not in chat.participants.all():
+            raise serializers.ValidationError("You are not a member of this chat!")
+        return attrs
 
 
 class ChatShortSerializer(serializers.ModelSerializer):
