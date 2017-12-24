@@ -19,7 +19,7 @@ class Chat(models.Model):
     ], max_length=len(PRIVATE), verbose_name=_("Chat room type"))
 
     participants = models.ManyToManyField("users.Profile", related_name="chats",
-                                          verbose_name=_("Participants"))
+                                          verbose_name=_("Participants"), blank=True)
 
     def __str__(self):
         return "Chat {}".format(self.name)
