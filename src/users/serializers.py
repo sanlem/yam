@@ -8,7 +8,7 @@ class UserSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ["id", "username"]
 
-    username = serializers.CharField(source="self.user.username")
+    username = serializers.CharField(source="user.username")
 
 
 class FullUserSerializer(serializers.ModelSerializer):
@@ -16,6 +16,6 @@ class FullUserSerializer(serializers.ModelSerializer):
         model = Profile
         fields = ["id", "username", "blocked", "contacts"]
 
-    username = serializers.CharField(source="self.user.username")
+    username = serializers.CharField(source="user.username")
     contacts = UserSerializer(many=True)
     blocked = UserSerializer(many=True)

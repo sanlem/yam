@@ -16,3 +16,6 @@ class Profile(models.Model):
     contacts = models.ManyToManyField("self", symmetrical=False,
                                       verbose_name=_("User's contacts"),
                                       related_name="contact_of")
+
+    def __str__(self):
+        return self.user.username

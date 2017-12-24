@@ -16,9 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from chat_messages.urls import router as messages_router
+from chat_messages import views as chat_views
 
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^messages/', include(messages_router.urls))
+    url(r'^messages/', include(messages_router.urls)),
+    url(r'^chats/(?P<pk>[0-9]+)/$', chat_views.ChatDetailView.as_view(), name="chat-detail"),
+    url(r'^chats/$', chat_views.ChatsView.as_view(), name="chat-list"),
 ]

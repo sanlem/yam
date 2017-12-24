@@ -31,16 +31,12 @@ class Message(models.Model):
         verbose_name_plural = _("Messages")
         ordering = ["created_at"]
 
-    chat = models.ForeignKey(Chat, related_name="message",
+    chat = models.ForeignKey(Chat, related_name="messages",
                              verbose_name=_("Chat"))
 
     sender = models.ForeignKey("users.Profile", related_name="out_messages",
                                blank=True,
                                verbose_name=_("Message sender"))
-
-    receiver = models.ForeignKey("users.Profile", related_name="in_messages",
-                                 blank=True,
-                                 verbose_name=_("Message receiver"))
 
     text = models.TextField(max_length=500, verbose_name=_("Message text"))
     created_at = models.DateTimeField(editable=False, auto_now_add=True)

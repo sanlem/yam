@@ -9,4 +9,9 @@ class IsMessageSenderOrReadOnly(permissions.BasePermission):
             return True
 
         # Instance must have an attribute named `owner`.
-        return any([obj.sender == request.user, obj.receiver == request.user])
+        return obj.sender == request.user
+
+
+class IsInMessageChat(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        return request.user in obj.chat.participants.all()
