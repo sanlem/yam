@@ -17,6 +17,7 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from chat_messages.urls import router as messages_router
 from chat_messages import views as chat_views
+from users import views as users_views
 
 
 urlpatterns = [
@@ -24,4 +25,7 @@ urlpatterns = [
     url(r'^messages/', include(messages_router.urls)),
     url(r'^chats/(?P<pk>[0-9]+)/$', chat_views.ChatDetailView.as_view(), name="chat-detail"),
     url(r'^chats/$', chat_views.ChatsView.as_view(), name="chat-list"),
+
+    url(r'^users/$', users_views.RegistrationView.as_view(), name="users-list"),
+    url(r'^users/me/$', users_views.CurrentUserInfoView.as_view(), name="users-me"),
 ]

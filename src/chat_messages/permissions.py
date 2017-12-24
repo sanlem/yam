@@ -14,4 +14,9 @@ class IsMessageSenderOrReadOnly(permissions.BasePermission):
 
 class IsInMessageChat(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        return request.user in obj.chat.participants.all()
+        return request.user.profile in obj.chat.participants.all()
+
+
+class IsInChat(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        request.user.profile in obj.participants.all()

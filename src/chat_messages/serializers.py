@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils.translation import ugettext_lazy as _
 from .models import Message, Chat
 from users.serializers import UserSerializer
 
@@ -13,7 +14,7 @@ class MessageSerializer(serializers.ModelSerializer):
         chat = attrs["chat"]
         user = self.context["request"].user
         if user.profile not in chat.participants.all():
-            raise serializers.ValidationError("You are not a member of this chat!")
+            raise serializers.ValidationError(_("You are not a member of this chat!"))
         return attrs
 
 

@@ -1,13 +1,14 @@
 from rest_framework import viewsets, generics
+from rest_framework.permissions import IsAuthenticated
 from .serializers import MessageSerializer, ChatFullSerializer, ChatShortSerializer
 from .models import Message, Chat
-from .permissions import IsMessageSenderOrReadOnly, IsInMessageChat
+from .permissions import IsMessageSenderOrReadOnly, IsInMessageChat, IsInChat
 
 
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
-    permission_classes = [IsMessageSenderOrReadOnly, IsInMessageChat]
+    permission_classes = [IsAuthenticated, IsMessageSenderOrReadOnly, IsInMessageChat]
 
     def get_serializer_context(self):
         """
@@ -26,6 +27,7 @@ class MessageViewSet(viewsets.ModelViewSet):
 
 class ChatsView(generics.ListCreateAPIView):
     serializer_class = ChatShortSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_context(self):
         return {"request": self.request}
@@ -49,3 +51,4 @@ class ChatsView(generics.ListCreateAPIView):
 class ChatDetailView(generics.RetrieveAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatFullSerializer
+    permission_classes = [IsAuthenticated, IsInChat]
