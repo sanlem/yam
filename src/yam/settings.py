@@ -120,3 +120,11 @@ VERSION = os.system("git describe")
 
 
 LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/"
+
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "users.authentication.CsrfExemptSessionAuthentication",
+    )
+}
