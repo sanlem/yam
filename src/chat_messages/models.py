@@ -7,16 +7,8 @@ class Chat(models.Model):
         verbose_name = _("Message")
         verbose_name_plural = _("Messages")
 
-    PRIVATE = "private"
-    GROUP = "group"
-
     name = models.CharField(max_length=25, null=True, blank=True,
                             verbose_name=_("Chat room name"))
-
-    room_type = models.CharField(choices=[
-        (PRIVATE, _("Private hat")),
-        (GROUP, _("Group chat"))
-    ], max_length=len(PRIVATE), verbose_name=_("Chat room type"))
 
     participants = models.ManyToManyField("users.Profile", related_name="chats",
                                           verbose_name=_("Participants"), blank=True)
