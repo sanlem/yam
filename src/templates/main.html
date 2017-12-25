@@ -52,6 +52,8 @@ Main
         <div class="popup-form">
         	<h2>All users</h2>
         	<div id="button-hidden-popup">X</div>
+        	<label for="name-chat">Name chat:</label>
+        	<input type="text" id="name-chat" name="name">
         	<div id="users-for-chat">
         		<ul>
         			
@@ -74,6 +76,7 @@ Main
   	console.log(data);
   	data.forEach(function(element){
   		$('#users-for-chat ul').append('<li data="'+element['id']+'">'+element['username']+'</li>'); 
+
   	})
   }
 	})
@@ -81,10 +84,34 @@ Main
 		$('.new-chat-wraper').css('display', 'none');
 		$('#users-for-chat ul').html('');
 	})
-	$('#users-for-chat ul li').on('click', function(){
-		$(this).addClass('active');
-	})
+	
 });
+	$('#users-for-chat ul').on('click', 'li',function(){
+		if($(this).hasClass('active')){
+			$(this).removeClass('active');
+		}else {
+		$(this).addClass('active');
+	}
+	})
+
+$('#create-chat').on('click',function(){
+var nameChat, arrayUser = [];
+nameChat = $('#name-chat').val();
+$('#users-for-chat ul li').each(function(element){
+	if($(this).hasClass('active')){
+		arrayUser.push($(this).attr('data'));
+	}
+})
+console.log({ name : nameChat, participation: arrayUser});
+	$.ajax({
+  url: "/api/chats/",
+  method: "POST",
+  data: { name : nameChat, participation: arrayUser},
+  dataType: 'json'
+});
+})
+
+
 </script>
 
 {% endblock %}
