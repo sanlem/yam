@@ -29,6 +29,9 @@ class AllUsersView(ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_queryset(self):
+        return Profile.objects.exclude(id=self.request.user.profile.id)
+
 
 class CurrentUserInfoView(RetrieveAPIView):
     serializer_class = FullUserSerializer
