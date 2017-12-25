@@ -29,8 +29,12 @@ urlpatterns = [
 
     url(r'^api/users/$', users_views.RegistrationView.as_view(), name="users-list"),
     url(r'^api/users/me/$', users_views.CurrentUserInfoView.as_view(), name="users-me"),
-    url(r'^api/users/block/$', users_views.BlockUserView.as_view(),
+    url(r'^api/users/blocked/add/$', users_views.BlockUserView.as_view(),
         name="users-block"),
-    url(r'^api/users/unlock/$', users_views.UnlockUserView.as_view(),
+    url(r'^api/users/blocked/remove/$', users_views.UnlockUserView.as_view(),
         name="users-unlock"),
+    url(r'^api/users/contacts/add/$', users_views.AddToContactsView.as_view(),
+        name="users-add-to-contacts"),
+    url(r'^api/users/contacts/remove/$', users_views.RemoveFromContactsView.as_view(),
+        name="users-remove-from-contacts"),
 ]
