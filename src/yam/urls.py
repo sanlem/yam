@@ -39,7 +39,8 @@ urlpatterns = [
     url(r'^api/chats/leave/$', chat_views.LeaveChatView.as_view(), name="chat-leave"),
     url(r'^api/chats/add_user/$', chat_views.AddToChatView.as_view(), name="chat-add"),
 
-    url(r'^api/users/$', users_views.RegistrationView.as_view(), name="users-list"),
+    url(r'^api/users/register/$', users_views.RegistrationView.as_view(), name="users-register"),
+    url(r'^api/users/$', users_views.AllUsersView.as_view(), name="users-list"),
     url(r'^api/users/me/$', users_views.CurrentUserInfoView.as_view(), name="users-me"),
     url(r'^api/users/blocked/add/$', users_views.BlockUserView.as_view(),
         name="users-block"),

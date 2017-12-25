@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -6,7 +6,7 @@ from rest_framework import status
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
-from .serializers import RegistrationSerializer, FullUserSerializer
+from .serializers import RegistrationSerializer, FullUserSerializer, UserSerializer
 from .models import Profile
 from .forms import RegistrationForm
 
@@ -23,6 +23,11 @@ class RegistrationView(CreateAPIView):
 
         profile = Profile(user=user)
         profile.save()
+
+
+class AllUsersView(ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
 
 
 class CurrentUserInfoView(RetrieveAPIView):
