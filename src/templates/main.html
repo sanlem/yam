@@ -5,6 +5,86 @@ Main
 {% endblock %}
 
 {% block content %}
-    <h1 class="tex">AZAZAZAZA</h1>
-    <p class="text">User - {{ request.user.username }}</p>
+
+    <section class="container">
+		<div class="content">
+			<div class="row">
+			 
+				<div class="col-md-4">
+					<div class="contacts">
+						<h2>Chats</h2>
+						<p id="new-chat">create new chat</p>
+						<ul>
+							<li><a href="">User 2</a></li>
+							<li><a href="">User 6</a></li>
+							<li><a href="">User 5</a></li>
+							<li><a href="">User 3</a></li>
+							<li><a href="">User 8</a></li>
+						</ul>
+					</div>
+				</div>
+				<div class="col-md-8">
+					<div class="container-messages">
+						<div class="all-messages">
+							<ul>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+								<li>Lorem ipsum dolor sit.</li>
+							</ul>
+						</div>
+						<form action="">
+							<textarea name="message" id="new-message" ></textarea>
+							<button>Отправить</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section class="new-chat-wraper">
+        <div class="popup-form">
+        	<h2>All users</h2>
+        	<div id="button-hidden-popup">X</div>
+        	<div id="users-for-chat">
+        		<ul>
+        			
+        		</ul>
+        	</div>
+        	<button id="create-chat">Create chat</button>
+        </div>
+    </section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+
+//CHATS
+
+	$('#new-chat').on('click', function(){
+		$('.new-chat-wraper').css('display', 'block');
+		$.ajax({
+  			url: "/api/users/",
+  			dataType: 'json',
+  success: function(data){
+  	console.log(data);
+  	data.forEach(function(element){
+  		$('#users-for-chat ul').append('<li data="'+element['id']+'">'+element['username']+'</li>'); 
+  	})
+  }
+	})
+	$('#button-hidden-popup').on('click', function(){
+		$('.new-chat-wraper').css('display', 'none');
+		$('#users-for-chat ul').html('');
+	})
+	$('#users-for-chat ul li').on('click', function(){
+		$(this).addClass('active');
+	})
+});
+</script>
+
 {% endblock %}
