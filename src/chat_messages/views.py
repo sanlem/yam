@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.utils.translation import ugettext as _
+from users.models import Profile
 from .serializers import MessageSerializer, ChatFullSerializer, ChatShortSerializer
 from .models import Message, Chat
 from .permissions import IsMessageSenderOrReadOnly, IsInMessageChat, IsInChat
@@ -46,10 +47,14 @@ class ChatsView(generics.ListCreateAPIView):
         """
         participants = serializer.validated_data["participants"]
         current_user = self.request.user.profile
-        if current_user not in participants:
-            participants.append(current_user)
 
-        serializer.save(participants=participants)
+        # don't add users that blocked the chat creator
+
+        not_blocked_creator = [u for u in participants if current_user not in u.blocked.all()]
+        if current_user not in not_blocked_creator:
+            not_blocked_creator.append(current_user)
+
+        serializer.save(participants=not_blocked_creator)
 
 
 class ChatDetailView(generics.RetrieveAPIView):
@@ -71,6 +76,8 @@ class LeaveChatView(APIView):
     def post(self, request):
         user = request.user.profile
 
+        print(request.data)
+
         _id = request.data.get("id", None)
 
         if _id is None:
@@ -78,7 +85,7 @@ class LeaveChatView(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            chat = Chat.objects.get(_id)
+            chat = Chat.objects.get(id=_id)
         except Chat.DoesNotExist:
             return Response({"error": _("Not found")},
                             status=status.HTTP_404_NOT_FOUND)
@@ -87,4 +94,46 @@ class LeaveChatView(APIView):
             chat.participants.remove(user)
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response({"error": _("You are not participant of this chat.")})
+            return Response({"error": _("You are not participant of this chat.")},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+
+class AddToChatView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user.profile
+
+        chat_id = request.data.get("chat_id", None)
+
+        if chat_id is None:
+            return Response({"error": _("Id should be provided.")},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        user_id = request.data.get("user_id", None)
+
+        if chat_id is None:
+            return Response({"error": _("Id should be provided.")},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            chat = Chat.objects.get(id=chat_id)
+        except Chat.DoesNotExist:
+            return Response({"error": _("Chat not found")},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        if user not in chat.participants.all():
+            return Response({"error": _("You're not participant of this chat")},
+                            status=status.HTTP_404_NOT_FOUND)
+        else:
+            try:
+                user_to_add = Profile.objects.get(id=user_id)
+            except Profile.DoesNotExist:
+                return Response({"error": _("User not found.")},
+                                status=status.HTTP_404_NOT_FOUND)
+            else:
+                if user in user_to_add.blocked.all():
+                    return Response({"error": _("You are blocked by this user.")})
+                else:
+                    chat.participants.add(user_to_add)
+                    return Response(status=status.HTTP_200_OK)
