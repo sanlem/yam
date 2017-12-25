@@ -140,11 +140,11 @@ class RemoveFromContactsView(APIView):
 
         current_user = request.user.profile
 
-        if blocked_user in current_user.blocked.all():
+        if blocked_user in current_user.contacts.all():
             current_user.contacts.remove(blocked_user)
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response({"error": _("Such user not found in blocked.")},
+            return Response({"error": _("Such user not found in contacts.")},
                             status=status.HTTP_404_NOT_FOUND)
 
 

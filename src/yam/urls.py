@@ -34,10 +34,10 @@ urlpatterns = [
 
     url(r'^api/messages/', include(messages_router.urls)),
     url(r'^api/chats/(?P<pk>[0-9]+)/$', chat_views.ChatDetailView.as_view(),
-        name="chat-detail"),
-    url(r'^api/chats/$', chat_views.ChatsView.as_view(), name="chat-list"),
-    url(r'^api/chats/leave/$', chat_views.LeaveChatView.as_view(), name="chat-leave"),
-    url(r'^api/chats/add_user/$', chat_views.AddToChatView.as_view(), name="chat-add"),
+        name="chats-detail"),
+    url(r'^api/chats/$', chat_views.ChatsView.as_view(), name="chats-list"),
+    url(r'^api/chats/leave/$', chat_views.LeaveChatView.as_view(), name="chats-leave"),
+    url(r'^api/chats/add_user/$', chat_views.AddToChatView.as_view(), name="chats-add"),
 
     url(r'^api/users/register/$', users_views.RegistrationView.as_view(), name="users-register"),
     url(r'^api/users/$', users_views.AllUsersView.as_view(), name="users-list"),
