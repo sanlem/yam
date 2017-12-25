@@ -52,3 +52,10 @@ class ChatDetailView(generics.RetrieveAPIView):
     queryset = Chat.objects.all()
     serializer_class = ChatFullSerializer
     permission_classes = [IsAuthenticated, IsInChat]
+
+    def get_serializer_context(self):
+        """
+        I will populate user to filter out messages from its
+        ignor list
+        """
+        return {"request": self.request}

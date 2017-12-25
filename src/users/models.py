@@ -13,7 +13,7 @@ class Profile(models.Model):
     blocked = models.ManyToManyField("self", symmetrical=False, blank=True,
                                      verbose_name=_("Blocked users"),
                                      related_name="blocked_by")
-    contacts = models.ManyToManyField("self", symmetrical=False,
+    contacts = models.ManyToManyField("self", symmetrical=False, blank=True,
                                       verbose_name=_("User's contacts"),
                                       related_name="contact_of")
 

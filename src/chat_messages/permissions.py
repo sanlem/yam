@@ -19,4 +19,4 @@ class IsInMessageChat(permissions.BasePermission):
 
 class IsInChat(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
-        request.user.profile in obj.participants.all()
+        return request.user.profile in obj.participants.all()

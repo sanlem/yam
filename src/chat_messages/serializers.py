@@ -30,4 +30,16 @@ class ChatFullSerializer(serializers.ModelSerializer):
         fields = ["id", "name", "participants", "messages"]
 
     participants = UserSerializer(many=True)
-    messages = MessageSerializer(many=True, source="messages.all")
+    # messages = MessageSerializer(many=True, source="messages.all")
+    messages = serializers.SerializerMethodField()
+
+    def get_messages(self, obj):
+        user = self.context["request"].user
+
+        profile = user.profile
+
+        # exclude messages from blocked senders
+        messages = obj.messages.exclude(sender__in=profile.blocked.all())
+        serializer = MessageSerializer(messages, many=True)
+        return serializer.data
+
