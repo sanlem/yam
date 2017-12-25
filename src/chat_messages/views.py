@@ -1,5 +1,9 @@
 from rest_framework import viewsets, generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.utils.translation import ugettext as _
 from .serializers import MessageSerializer, ChatFullSerializer, ChatShortSerializer
 from .models import Message, Chat
 from .permissions import IsMessageSenderOrReadOnly, IsInMessageChat, IsInChat
@@ -59,3 +63,28 @@ class ChatDetailView(generics.RetrieveAPIView):
         ignor list
         """
         return {"request": self.request}
+
+
+class LeaveChatView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user.profile
+
+        _id = request.data.get("id", None)
+
+        if _id is None:
+            return Response({"error": _("Id should be provided.")},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            chat = Chat.objects.get(_id)
+        except Chat.DoesNotExist:
+            return Response({"error": _("Not found")},
+                            status=status.HTTP_404_NOT_FOUND)
+
+        if user in chat.participants.all():
+            chat.participants.remove(user)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response({"error": _("You are not participant of this chat.")})

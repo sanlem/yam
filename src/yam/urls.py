@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^api/chats/(?P<pk>[0-9]+)/$', chat_views.ChatDetailView.as_view(),
         name="chat-detail"),
     url(r'^api/chats/$', chat_views.ChatsView.as_view(), name="chat-list"),
+    url(r'^api/chats/leave/$', chat_views.LeaveChatView.as_view(), name="chat-leave"),
 
     url(r'^api/users/$', users_views.RegistrationView.as_view(), name="users-list"),
     url(r'^api/users/me/$', users_views.CurrentUserInfoView.as_view(), name="users-me"),
