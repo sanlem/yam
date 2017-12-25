@@ -3,7 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import render
 from django.utils.translation import ugettext as _
+from django.contrib.auth.decorators import login_required
 from users.models import Profile
 from .serializers import MessageSerializer, ChatFullSerializer, ChatShortSerializer
 from .models import Message, Chat
@@ -137,3 +139,8 @@ class AddToChatView(APIView):
                 else:
                     chat.participants.add(user_to_add)
                     return Response(status=status.HTTP_200_OK)
+
+
+@login_required
+def main(request):
+    return render(request, "main.html")

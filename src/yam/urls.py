@@ -14,7 +14,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
 from django.conf.urls import url, include
+from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+from django.conf.urls.static import static
 from chat_messages.urls import router as messages_router
 from chat_messages import views as chat_views
 from users import views as users_views
@@ -22,6 +25,13 @@ from users import views as users_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+
+    url(r'^$', chat_views.main, name="home"),
+
+    url(r'^login/$', auth_views.login, {"template_name": "login.html"}, name='login'),
+    url(r'^logout/$', auth_views.logout,{'next_page': '/login'}, name='logout'),
+    url(r'^signup/$', users_views.signup, name='signup'),
+
     url(r'^api/messages/', include(messages_router.urls)),
     url(r'^api/chats/(?P<pk>[0-9]+)/$', chat_views.ChatDetailView.as_view(),
         name="chat-detail"),
@@ -40,3 +50,5 @@ urlpatterns = [
     url(r'^api/users/contacts/remove/$', users_views.RemoveFromContactsView.as_view(),
         name="users-remove-from-contacts"),
 ]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

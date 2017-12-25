@@ -3,9 +3,12 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
+from django.contrib.auth import login, authenticate
+from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
 from .serializers import RegistrationSerializer, FullUserSerializer
 from .models import Profile
+from .forms import RegistrationForm
 
 
 class RegistrationView(CreateAPIView):
@@ -138,3 +141,18 @@ class RemoveFromContactsView(APIView):
         else:
             return Response({"error": _("Such user not found in blocked.")},
                             status=status.HTTP_404_NOT_FOUND)
+
+
+def signup(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
+            login(request, user)
+            return redirect('home')
+    else:
+        form = RegistrationForm()
+    return render(request, 'signup.html', {'form': form})
