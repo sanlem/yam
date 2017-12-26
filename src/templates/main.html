@@ -26,10 +26,8 @@ Main
 							
 						</ul>
 					</div>
-					<form action="">
 						<textarea name="message" id="new-message" ></textarea>
 						<button>Отправить</button>
-					</form>
 				</div>
 			</div>
 			<div class="col-md-2">
@@ -61,6 +59,10 @@ Main
 <script>
 //global information
 var currentUserInfo;
+var currentChatId;
+var timeReload = 100;
+var increment = 0;
+
 //CHATS
 //Load list users
 $('#new-chat').on('click', function(){
@@ -101,29 +103,65 @@ $('#create-chat').on('click',function(){
 	$.ajax({
 		url: "/api/chats/",
 		method: "POST",
-		dataType: "multipart/form-data",
-		data: { name : nameChat, participants: {1:1,2:2,3:3}},
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+  		data: JSON.stringify({ name : nameChat, participants: arrayUser}),
 		success: function(data){
 			hiddenPopup();
+			$('.contacts ul li').remove();
+			loadListChats();
 		}
 	});
 })
 
 // Chooise chats
 $('.contacts ul').on('click', 'li', function(){
+	$('.contacts ul li').removeClass('active');
+	$(this).addClass('active');
 	var idChat = $(this).attr('data');
 	showMessages(idChat);
+	currentChatId = idChat;
+	setInterval(function(){
+	showMessages(currentChatId);
+},100)
 })
 
 // Hidden popup
 $('#button-hidden-popup').on('click', function(){
 		hiddenPopup();
+
 	})
 
+// Send message 
+$('.container-messages button').on('click', function(){
+	var messages = $('#new-message').val();
+	$.ajax({
+		url: "/api/messages/",
+		dataType: 'json',
+		type: 'POST',
+		data: {text: messages, chat: currentChatId}
+	})
+	showMessages(currentChatId);
+})
 
+// Leave shats
+$('.contacts').on('click', 'span', function(){
+	var idChat = $(this).attr('data');
+	var element = $(this);
+	$.ajax({
+		url: "/api/chats/leave/",
+		type: "POST",
+		data: {id: idChat},
+		success: function(){
+			element.prev().remove();
+			element.remove();
+		}
+	})
+})
 
 
 function hiddenPopup() {
+	loadListChats();
 	$('.new-chat-wraper').css('display', 'none');
 	$('#users-for-chat ul').html('');
 }
@@ -133,29 +171,44 @@ function showMessages(idChat){
 		url: "/api/chats/"+idChat+"",
 		dataType: 'json',
 		success: function(data){
-			var textposition = '';
+
 			console.log(data);
 
-			data['messages'].forEach(function(element){
-				if(element['sender'] == getMyId()){
-					textposition = 'style="text-align: right;"';
-				}
-				$('.all-messages ul').append('<li '+textposition+'>'+element['text']+'</li>')
-			});
+			loadListMessages(data['messages']);
+			loadListChatUser(data['participants']);
 
-			data['participants'].forEach(function(element){
-				if(element['sender'] == getMyId()){
-					textposition = 'style="text-align: right;"';
-				}
-				$('.all-messages ul').append('<li '+textposition+'>'+element['text']+'</li>')
-			});
-
+		},
+		error: function(){
+			timeReload *= Math.pow(Math.E, increment);
+			increment++;
 		}
 	})
 }
+
+function loadListMessages(messages){
+	var container = $('.all-messages ul');
+	container.html('');
+	console.log(messages);
+	messages.forEach(function(element){
+				var textposition = '';
+				if(element['sender'] == getMyId()){
+					textposition = 'style="text-align: right;"';
+				}
+				container.append('<li '+textposition+'>'+element['text']+'</li>')
+			});
+}
 	
+function loadListChatUser(users){
+	var container = $('#user-curent-chat ul');
+	container.html('');
+	users.forEach(function(element){
+				container.append('<li data="'+element['id']+'">'+element['username']+'</li>')
+			});
+}
+
 function loadListChats() {
 	var container = $('.contacts ul');
+	container.html('');
 	$.ajax({
 		url: "/api/chats/",
 		success:function(data){
@@ -168,7 +221,7 @@ function loadListChats() {
 
 function putListContent(arrayElements, container){
 	arrayElements.forEach(function(element){
-		container.append('<li data="'+element['id']+'">'+element['name']+'</li>');
+		container.append('<li data="'+element['id']+'">'+element['name']+'</li><span data="'+element['id']+'">leave</span>');
 	})
 }
 
@@ -186,6 +239,8 @@ function getMyName() {
 			currentUserInfo = data;
 		}
 	})
+
+
 
 
 
