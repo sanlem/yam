@@ -123,6 +123,12 @@ button {
 #users-for-chat ul li.active {
     color: red;
 }
+.contacts ul li {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
 </style>
 </head>
 <body>
@@ -136,7 +142,7 @@ button {
                     <div class="status-bar"></div>
                 </div>
                 <div class="col-md-4">
-                <a href="/">Log out</a>
+                <a href="/logout">Log out</a>
                     <div class="user-information">
                         {{ request.user.username }}
                     </div>
