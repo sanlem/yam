@@ -6,4 +6,4 @@ install:
 
 test:
 	python $(MANAGE) test
-	flake8 --exclude '*migrations*,manage.py'
+	flake8 --exclude '*migrations*,manage.py,tests.py'

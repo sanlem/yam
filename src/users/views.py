@@ -6,7 +6,8 @@ from rest_framework import status
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.utils.translation import ugettext as _
-from .serializers import RegistrationSerializer, FullUserSerializer, UserSerializer
+from .serializers import RegistrationSerializer, FullUserSerializer, \
+    UserSerializer
 from .models import Profile
 from .forms import RegistrationForm
 

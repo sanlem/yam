@@ -7,7 +7,8 @@ from django.shortcuts import render
 from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from users.models import Profile
-from .serializers import MessageSerializer, ChatFullSerializer, ChatShortSerializer
+from .serializers import MessageSerializer, ChatFullSerializer, \
+    ChatShortSerializer
 from .models import Message, Chat
 from .permissions import IsMessageSenderOrReadOnly, IsInMessageChat, IsInChat
 
@@ -15,7 +16,8 @@ from .permissions import IsMessageSenderOrReadOnly, IsInMessageChat, IsInChat
 class MessageViewSet(viewsets.ModelViewSet):
     serializer_class = MessageSerializer
     queryset = Message.objects.all()
-    permission_classes = [IsAuthenticated, IsMessageSenderOrReadOnly, IsInMessageChat]
+    permission_classes = [IsAuthenticated, IsMessageSenderOrReadOnly,
+                          IsInMessageChat]
 
     def get_serializer_context(self):
         """
@@ -52,7 +54,8 @@ class ChatsView(generics.ListCreateAPIView):
 
         # don't add users that blocked the chat creator
 
-        not_blocked_creator = [u for u in participants if current_user not in u.blocked.all()]
+        not_blocked_creator = [u for u in participants
+                               if current_user not in u.blocked.all()]
         if current_user not in not_blocked_creator:
             not_blocked_creator.append(current_user)
 
@@ -96,7 +99,8 @@ class LeaveChatView(APIView):
             chat.participants.remove(user)
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response({"error": _("You are not participant of this chat.")},
+            return Response({"error":
+                             _("You are not participant of this chat.")},
                             status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -125,7 +129,8 @@ class AddToChatView(APIView):
                             status=status.HTTP_404_NOT_FOUND)
 
         if user not in chat.participants.all():
-            return Response({"error": _("You're not participant of this chat")},
+            return Response({"error":
+                             _("You're not participant of this chat")},
                             status=status.HTTP_404_NOT_FOUND)
         else:
             try:
@@ -135,7 +140,8 @@ class AddToChatView(APIView):
                                 status=status.HTTP_404_NOT_FOUND)
             else:
                 if user in user_to_add.blocked.all():
-                    return Response({"error": _("You are blocked by this user.")})
+                    return Response({"error":
+                                     _("You are blocked by this user.")})
                 else:
                     chat.participants.add(user_to_add)
                     return Response(status=status.HTTP_200_OK)

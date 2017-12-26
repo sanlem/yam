@@ -10,13 +10,15 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ["id", "sender", "text", "created_at", "chat"]
         read_only_fields = ["sender", "created_at"]
 
-    sender = UserSerializer()
+    sender = UserSerializer(read_only=True)
 
     def validate(self, attrs):
         chat = attrs["chat"]
         user = self.context["request"].user
         if user.profile not in chat.participants.all():
-            raise serializers.ValidationError(_("You are not a member of this chat!"))
+            raise serializers.ValidationError(
+                _("You are not a member of this chat!")
+            )
         return attrs
 
 
@@ -44,4 +46,3 @@ class ChatFullSerializer(serializers.ModelSerializer):
         messages = obj.messages.exclude(sender__in=profile.blocked.all())
         serializer = MessageSerializer(messages, many=True)
         return serializer.data
-

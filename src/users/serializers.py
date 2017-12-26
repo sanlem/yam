@@ -35,6 +35,8 @@ class RegistrationSerializer(serializers.ModelSerializer):
         pwr2 = attrs["password2"]
 
         if not (pwr1 == pwr2 and pwr1):
-            raise serializers.ValidationError(_("Passwords should be non-empty and equal."))
+            raise serializers.ValidationError(
+                _("Passwords should be non-empty and equal.")
+            )
 
         return attrs

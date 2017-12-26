@@ -10,8 +10,10 @@ class Chat(models.Model):
     name = models.CharField(max_length=25, null=True, blank=True,
                             verbose_name=_("Chat room name"))
 
-    participants = models.ManyToManyField("users.Profile", related_name="chats",
-                                          verbose_name=_("Participants"), blank=True)
+    participants = models.ManyToManyField("users.Profile",
+                                          related_name="chats",
+                                          verbose_name=_("Participants"),
+                                          blank=True)
 
     def __str__(self):
         return "Chat {}".format(self.name)
