@@ -10,6 +10,8 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ["id", "sender", "text", "created_at", "chat"]
         read_only_fields = ["sender", "created_at"]
 
+    sender = UserSerializer()
+
     def validate(self, attrs):
         chat = attrs["chat"]
         user = self.context["request"].user
