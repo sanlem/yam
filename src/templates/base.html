@@ -111,7 +111,7 @@ button {
     bottom: 10px;
     right: 10px;
 }
-#button-hidden-popup {
+.button-hidden-popup {
     position: absolute;
     top: 7px;
     right: 11px;
@@ -122,6 +122,20 @@ button {
 }
 #users-for-chat ul li.active {
     color: red;
+}
+.contacts ul li {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+}
+.contacts ul li.active {
+    color: red;
+}
+.contacts span {
+    cursor: pointer;
+    color: #aaa;
+
 }
 </style>
 </head>
@@ -136,7 +150,7 @@ button {
                     <div class="status-bar"></div>
                 </div>
                 <div class="col-md-4">
-                <a href="/">Log out</a>
+                <a href="/logout">Log out</a>
                     <div class="user-information">
                         {{ request.user.username }}
                     </div>

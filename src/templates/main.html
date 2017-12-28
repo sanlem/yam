@@ -6,111 +6,277 @@ Main
 
 {% block content %}
 
-    <section class="container">
-		<div class="content">
-			<div class="row">
-			 
-				<div class="col-md-4">
-					<div class="contacts">
-						<h2>Chats</h2>
-						<p id="new-chat">create new chat</p>
+<section class="container">
+	<div class="content">
+		<div class="row">
+
+			<div class="col-md-4">
+				<div class="contacts">
+					<h2>Chats</h2>
+					<p id="new-chat">create new chat</p>
+					<ul>
+						
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="container-messages">
+					<div class="all-messages">
 						<ul>
-							<li><a href="">User 2</a></li>
-							<li><a href="">User 6</a></li>
-							<li><a href="">User 5</a></li>
-							<li><a href="">User 3</a></li>
-							<li><a href="">User 8</a></li>
+							
 						</ul>
 					</div>
+						<textarea name="message" id="new-message" ></textarea>
+						<button>Отправить</button>
 				</div>
-				<div class="col-md-8">
-					<div class="container-messages">
-						<div class="all-messages">
-							<ul>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-								<li>Lorem ipsum dolor sit.</li>
-							</ul>
-						</div>
-						<form action="">
-							<textarea name="message" id="new-message" ></textarea>
-							<button>Отправить</button>
-						</form>
-					</div>
+			</div>
+			<div class="col-md-2">
+				<h2>Users chat</h2>
+				<div id="user-curent-chat">
+					<ul>
+						
+					</ul>
 				</div>
 			</div>
 		</div>
-	</section>
-	<section class="new-chat-wraper">
-        <div class="popup-form">
-        	<h2>All users</h2>
-        	<div id="button-hidden-popup">X</div>
-        	<label for="name-chat">Name chat:</label>
-        	<input type="text" id="name-chat" name="name">
-        	<div id="users-for-chat">
-        		<ul>
-        			
-        		</ul>
-        	</div>
-        	<button id="create-chat">Create chat</button>
-        </div>
-    </section>
+	</div>
+</section>
+<section id="new-chat-wraper" class="new-chat-wraper">
+	<div class="popup-form">
+		<h2>All users</h2>
+		<div class="button-hidden-popup">X</div>
+		<label for="name-chat">Name chat:</label>
+		<input type="text" id="name-chat" name="name">
+		<div id="users-for-chat">
+			<ul>
+
+			</ul>
+		</div>
+		<button id="create-chat">Create chat</button>
+	</div>
+</section>
+<section id="add-user-wraper" class="new-chat-wraper">
+	<div class="popup-form">
+		<h2>All users fsdfg</h2>
+		<div class="button-hidden-popup">X</div>
+		<label for="name-chat">Name chat:</label>
+		<input type="text" id="name-chat" name="name">
+		<div id="users-for-chat">
+			<ul>
+
+			</ul>
+		</div>
+		<button id="create-chat">Create chat</button>
+	</div>
+</section>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script>
+//global information
+var currentUserInfo;
+var currentChatId;
+var timeReload = 100;
+var increment = 0;
 
 //CHATS
+//Load list users
+$('#new-chat').on('click', function(){
 
-	$('#new-chat').on('click', function(){
-		$('.new-chat-wraper').css('display', 'block');
-		$.ajax({
-  			url: "/api/users/",
-  			dataType: 'json',
-  success: function(data){
-  	console.log(data);
-  	data.forEach(function(element){
-  		$('#users-for-chat ul').append('<li data="'+element['id']+'">'+element['username']+'</li>'); 
-
-  	})
-  }
-	})
-	$('#button-hidden-popup').on('click', function(){
-		$('.new-chat-wraper').css('display', 'none');
-		$('#users-for-chat ul').html('');
+	var container = $('#users-for-chat ul');
+	$('#new-chat-wraper').css('display', 'block');
+	$.ajax({
+		url: "/api/users/",
+		dataType: 'json',
+		success: function(data){
+			data.forEach(function(element){
+				$('#users-for-chat ul').append('<li data="'+element['id']+'">'+element['username']+'</li>'); 
+			})
+		}
 	})
 	
+	
 });
-	$('#users-for-chat ul').on('click', 'li',function(){
-		if($(this).hasClass('active')){
-			$(this).removeClass('active');
-		}else {
+// Select user for new chat
+$('#users-for-chat ul').on('click', 'li',function(){
+	if($(this).hasClass('active')){
+		$(this).removeClass('active');
+	}else {
 		$(this).addClass('active');
 	}
+})
+
+// Send form create new chat
+$('#create-chat').on('click',function(){
+	var nameChat, arrayUser = [];
+	nameChat = $('#name-chat').val();
+	$('#name-chat').val('');
+	$('#users-for-chat ul li').each(function(element){
+		if($(this).hasClass('active')){
+			arrayUser.push($(this).attr('data'));
+		}
+	})
+	console.log({ name : nameChat, participants: arrayUser});
+	$.ajax({
+		url: "/api/chats/",
+		method: "POST",
+		contentType: "application/json; charset=utf-8",
+		dataType: 'json',
+  		data: JSON.stringify({ name : nameChat, participants: arrayUser}),
+		success: function(data){
+			hiddenPopup();
+			loadListChats();
+		}
+	});
+})
+
+// Chooise chats
+$('.contacts ul').on('click', 'li', function(){
+	$('.contacts ul li').removeClass('active');
+	$(this).addClass('active');
+	var idChat = $(this).attr('data');
+	showMessages(idChat);
+	currentChatId = idChat;
+	setInterval(function(){
+	showMessages(currentChatId);
+},100)
+})
+
+// Hidden popup
+$('.button-hidden-popup').on('click', function(){
+		hiddenPopup();
+
 	})
 
-$('#create-chat').on('click',function(){
-var nameChat, arrayUser = [];
-nameChat = $('#name-chat').val();
-$('#users-for-chat ul li').each(function(element){
-	if($(this).hasClass('active')){
-		arrayUser.push($(this).attr('data'));
-	}
-})
-console.log({ name : nameChat, participation: arrayUser});
+// Send message 
+$('.container-messages button').on('click', function(){
+	var messages = $('#new-message').val();
+	$('#new-message').val('');
 	$.ajax({
-  url: "/api/chats/",
-  method: "POST",
-  data: { name : nameChat, participation: arrayUser},
-  dataType: 'json'
-});
+		url: "/api/messages/",
+		dataType: 'json',
+		type: 'POST',
+		data: {text: messages, chat: currentChatId}
+	})
+	showMessages(currentChatId);
 })
 
+// Leave chats
+$('.contacts').on('click', '#leave-chats', function(){
+	var idChat = $(this).attr('data');
+	var element = $(this);
+	$.ajax({
+		url: "/api/chats/leave/",
+		type: "POST",
+		data: {id: idChat},
+		success: function(){
+			element.prev().remove();
+			element.next().remove();
+			element.remove();
+		}
+	})
+})
+// Add user in chats
+$('.contacts').on('click', '#add-chats', function(){
+var container = $('#users-for-chat ul');
+	$('#add-user-wraper').css('display', 'block');
+	$.ajax({
+		url: "/api/users/",
+		dataType: 'json',
+		success: function(data){
+			data.forEach(function(element){
+				$('#users-for-chat ul').append('<li data="'+element['id']+'">'+element['username']+'</li>'); 
+			})
+		}
+	})
+})
+
+function hiddenPopup() {
+	loadListChats();
+	$('#new-chat-wraper').css('display', 'none');
+	$('#add-user-wraper').css('display', 'none');
+	$('#users-for-chat ul').html('');
+}
+
+function showMessages(idChat){
+	$.ajax({
+		url: "/api/chats/"+idChat+"",
+		dataType: 'json',
+		success: function(data){
+
+			console.log(data);
+
+			loadListMessages(data['messages']);
+			loadListChatUser(data['participants']);
+
+		},
+		error: function(){
+			timeReload *= Math.pow(Math.E, increment);
+			increment++;
+		}
+	})
+}
+
+function loadListMessages(messages){
+	var container = $('.all-messages ul');
+	container.html('');
+	console.log(messages);
+	messages.forEach(function(element){
+				var textposition = '';
+				if(element['sender'] == getMyId()){
+					textposition = 'style="text-align: right;"';
+				}
+				container.append('<li '+textposition+'>'+element['text']+" ("+element['created_at']+") "+'</li>')
+			});
+}
+	
+function loadListChatUser(users){
+	var container = $('#user-curent-chat ul');
+	container.html('');
+	users.forEach(function(element){
+				container.append('<li data="'+element['id']+'">'+element['username']+'</li>')
+			});
+}
+
+function loadListChats() {
+	var container = $('.contacts ul');
+	container.html('');
+	$.ajax({
+		url: "/api/chats/",
+		success:function(data){
+			putListContent(data, container);
+			
+			
+		}
+	})
+}
+
+function putListContent(arrayElements, container){
+	arrayElements.forEach(function(element){
+		container.append('<li data="'+element['id']+'">'+element['name']+'</li><span id="leave-chats" data="'+element['id']+'">leave</span><span id="add-chats">/add</span>');
+	})
+}
+
+function getMyId(){
+	return currentUserInfo['id'];
+}
+function getMyName() {
+	return currentUserInfo['username'];
+}
+
+	$.ajax({
+		url: "/api/users/me/",
+		dataType: 'json',
+		success: function(data){
+			currentUserInfo = data;
+		}
+	})
+
+
+
+
+
+$(document).ready(function(){
+	loadListChats();
+})
 
 </script>
 
